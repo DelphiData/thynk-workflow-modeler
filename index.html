@@ -6,719 +6,80 @@
 <title>Thynk Health | Workflow Modeler</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  :root { --ring: 0 0 0 2px rgba(79,70,229,.35); }
-  body { font-family: 'Inter', ui-sans-serif, system-ui; background:#f7fafc; }
-  .card{ background:white; border:1px solid #e5e7eb; border-radius:1rem; box-shadow:0 6px 18px rgba(0,0,0,.04) }
-  .pill{ border-radius:9999px; padding:.125rem .5rem; font-size:.75rem; font-weight:600 }
-  .input{ border:1px solid #e5e7eb; border-radius:.5rem; padding:.5rem .6rem; transition:.15s;
-          outline:none }
-  .input:focus{ border-color:#4f46e5; box-shadow:var(--ring) }
-  .chev{ transition: transform .2s ease }
-  .exp .chev{ transform: rotate(180deg) }
-</style>
+<link href="style.css" rel="stylesheet">
 </head>
-<body class="text-gray-800">
-<div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+<body class="font-inter bg-thynk-gray text-gray-800">
 
-  <!-- Header -->
-  <header class="mb-8 text-center">
-    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
-      <i class="fas fa-diagram-project text-indigo-600"></i>
-      Thynk Health Workflow Modeler
-    </h1>
-    <p class="text-gray-600 mt-2 max-w-3xl mx-auto">
-      Compare a self-managed program against Thynk’s turn-key managed service. Model staffing, efficiency gains, and total cost—without per-case fees.
-    </p>
-  </header>
+<!-- HEADER -->
+<header class="text-center py-10 border-b border-gray-200 bg-white shadow-sm">
+  <img src="https://www.thynkhealth.com/wp-content/uploads/2020/06/ThynkHealth_Logo.svg"
+       alt="Thynk Health" class="mx-auto h-10 mb-3">
+  <h1 class="text-4xl md:text-5xl font-extrabold text-thynk-blue tracking-tight">
+    Workflow Modeler
+  </h1>
+  <p class="mt-2 text-gray-600 max-w-2xl mx-auto">
+    Model your incidental-findings workflow — compare hospital-managed vs Thynk Managed programs.
+  </p>
+</header>
 
-  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
-    <!-- LEFT: Inputs -->
-    <section class="xl:col-span-1 space-y-6">
-      <!-- Core -->
-      <div class="card p-5">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-          <i class="fas fa-sliders text-indigo-500"></i> 1) Core Assumptions
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <label class="sm:col-span-2">
-            <span class="block text-sm font-medium text-gray-700 mb-1">Annual CT Studies</span>
-            <input id="ctVolume" type="number" class="input w-full text-lg font-semibold" value="40000" min="0" step="1000">
-          </label>
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto p-6 grid grid-cols-1 xl:grid-cols-3 gap-8">
 
-          <label class="sm:col-span-2">
-            <span class="block text-sm font-medium text-gray-700 mb-1">Support Model</span>
-            <select id="supportModel" class="input w-full text-lg font-semibold">
-              <option value="thynk_managed">Thynk Managed Service (no per-case; FTE+efficiency)</option>
-              <option value="hospital_managed">Hospital-Managed Program</option>
-            </select>
-          </label>
-
-          <label>
-            <span class="block text-sm font-medium text-gray-700 mb-1">“Blue” Rate (%)</span>
-            <input id="blueRate" type="number" class="input w-full" value="12" min="0" max="50" step="1">
-          </label>
-          <label>
-            <span class="block text-sm font-medium text-gray-700 mb-1">Staff Overhead (%)</span>
-            <input id="overhead" type="number" class="input w-full" value="20" min="0" max="50" step="1">
-          </label>
-        </div>
-
-        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="p-3 rounded-md bg-blue-50 border border-blue-200">
-            <h4 class="font-semibold text-blue-800">Clinical Navigator (RN)</h4>
-            <p class="text-xs text-blue-900/80">High-acuity modules (e.g., LCS, IPN, Breast) requiring clinical judgment & patient education.</p>
-          </div>
-          <div class="p-3 rounded-md bg-green-50 border border-green-200">
-            <h4 class="font-semibold text-green-800">Resolution Specialist</h4>
-            <p class="text-xs text-green-900/80">Administrative loop-closing, reminders, scheduling, and documentation.</p>
-          </div>
-        </div>
+  <!-- INPUTS -->
+  <section class="space-y-6 xl:col-span-1">
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-sliders text-thynk-blue"></i> Core Assumptions</h2>
+      <label class="block mb-3">
+        <span class="label">Annual CT Studies</span>
+        <input id="ctVolume" type="number" value="40000" step="1000" class="input">
+      </label>
+      <label class="block mb-3">
+        <span class="label">Support Model</span>
+        <select id="supportModel" class="input">
+          <option value="thynk_managed">Thynk Managed Service</option>
+          <option value="hospital_managed">Hospital-Managed Program</option>
+        </select>
+      </label>
+      <div class="grid grid-cols-2 gap-3">
+        <label><span class="label">Blue Rate (%)</span><input id="blueRate" value="12" class="input" type="number"></label>
+        <label><span class="label">Staff Overhead (%)</span><input id="overhead" value="20" class="input" type="number"></label>
       </div>
-
-      <!-- Hospital Rates -->
-      <div class="card p-5">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-          <i class="fas fa-dollar-sign text-green-500"></i> 2) Hospital Staff Rates ($/hr)
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <label>
-            <span class="block text-sm font-medium text-gray-700 mb-1">Resolution Specialist</span>
-            <input id="rateSpecialist" type="number" class="input w-full" value="28" min="0" step="1">
-          </label>
-          <label>
-            <span class="block text-sm font-medium text-gray-700 mb-1">Clinical Navigator</span>
-            <input id="rateNavigator" type="number" class="input w-full" value="65" min="0" step="1">
-          </label>
-          <label>
-            <span class="block text-sm font-medium text-gray-700 mb-1">PCP “Noise” Value</span>
-            <input id="ratePCP" type="number" class="input w-full" value="240" min="0" step="5">
-          </label>
-        </div>
-      </div>
-
-      <!-- Time per Case -->
-      <div class="card p-5">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-          <i class="fas fa-clock text-blue-500"></i> 3) Time per Case (mins)
-        </h3>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <label><span class="block text-sm font-medium mb-1">Blue</span><input id="tBlue" class="input w-full" type="number" value="1" step="0.5" min="0"></label>
-          <label><span class="block text-sm font-medium mb-1">Green</span><input id="tGreen" class="input w-full" type="number" value="2" step="0.5" min="0"></label>
-          <label><span class="block text-sm font-medium mb-1">Amber</span><input id="tAmber" class="input w-full" type="number" value="5" step="0.5" min="0"></label>
-          <label><span class="block text-sm font-medium mb-1">Red</span><input id="tRed" class="input w-full" type="number" value="10" step="0.5" min="0"></label>
-        </div>
-      </div>
-
-      <!-- Thynk Managed (FTE model) -->
-      <div class="card p-5">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-          <i class="fas fa-handshake-simple text-purple-500"></i> 4) Thynk Managed (No Per-Case)
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <label>
-            <span class="block text-sm font-medium text-gray-700 mb-1">Efficiency Gain (%)</span>
-            <input id="thynkEff" type="number" class="input w-full" value="35" min="0" max="90" step="1">
-          </label>
-          <label>
-            <span class="block text-sm font-medium text-gray-700 mb-1">Res. Specialist $/hr</span>
-            <input id="rateThynkSpec" type="number" class="input w-full" value="24" min="0" step="1">
-          </label>
-          <label>
-            <span class="block text-sm font-medium text-gray-700 mb-1">Navigator $/hr</span>
-            <input id="rateThynkNav" type="number" class="input w-full" value="55" min="0" step="1">
-          </label>
-        </div>
-        <p class="text-xs text-gray-500 mt-3">Thynk cost is computed from fractional FTEs × hourly rates × 1920 hrs/yr with efficiency-reduced minutes. No navigator/case-closer per-case fees.</p>
-      </div>
-
-      <!-- Competitor & DIY -->
-      <div class="card p-5">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-          <i class="fas fa-bell text-yellow-500"></i> 5) Competitor & DIY Model
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <label><span class="block text-sm font-medium mb-1">“Noisy” Alerts / 1k CTs</span><input id="noiseRate" class="input w-full" type="number" value="50" step="5" min="0"></label>
-          <label><span class="block text-sm font-medium mb-1">Mins per Noisy Alert</span><input id="noiseMin" class="input w-full" type="number" value="3" step="0.5" min="0"></label>
-          <label><span class="block text-sm font-medium mb-1">EHR Build (hrs)</span><input id="epicBuild" class="input w-full" type="number" value="600" step="20" min="0"></label>
-          <label><span class="block text-sm font-medium mb-1">EHR Maint (hrs/yr)</span><input id="epicMaint" class="input w-full" type="number" value="240" step="20" min="0"></label>
-          <label><span class="block text-sm font-medium mb-1">IT/Analyst $/hr</span><input id="rateIT" class="input w-full" type="number" value="80" step="5" min="0"></label>
-          <label><span class="block text-sm font-medium mb-1">Clinical SME $/hr</span><input id="rateSME" class="input w-full" type="number" value="120" step="5" min="0"></label>
-        </div>
-      </div>
-
-      <!-- Confidence (optional) -->
-      <div class="card p-5">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-          <i class="fas fa-shield-check text-cyan-500"></i> 6) Confidence (Optional)
-        </h3>
-        <div class="flex items-center gap-3">
-          <label class="flex items-center gap-3 cursor-pointer">
-            <input id="confOn" type="checkbox" class="peer sr-only">
-            <span class="relative w-11 h-6 bg-gray-300 rounded-full transition peer-checked:bg-cyan-600"></span>
-            <span class="-ml-11 w-5 h-5 bg-white rounded-full translate-x-1 transition absolute peer-checked:translate-x-6"></span>
-            <span class="ml-10 text-sm font-medium text-gray-700">Show confidence & guideline tag</span>
-          </label>
-        </div>
-        <div class="mt-3 grid grid-cols-2 gap-4">
-          <label><span class="block text-sm font-medium mb-1">Model Precision (%)</span><input id="precision" type="number" class="input w-full" value="90" min="50" max="100"></label>
-          <label><span class="block text-sm font-medium mb-1">CI Level</span>
-            <select id="ciLevel" class="input w-full">
-              <option value="1.96">95%</option>
-              <option value="2.58">99%</option>
-              <option value="1.64">90%</option>
-            </select>
-          </label>
-        </div>
-        <p class="text-xs text-gray-500 mt-2">CI is estimated from the total annual module volume using a normal approximation for proportions.</p>
-      </div>
-    </section>
-
-    <!-- RIGHT: Outputs -->
-    <section class="xl:col-span-2 space-y-6 lg:space-y-8">
-
-      <!-- Workflow Viz -->
-      <div class="card p-5">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-          <i class="fas fa-sitemap text-gray-500"></i> Workflow Visualizer
-        </h3>
-        <div id="workflow"></div>
-      </div>
-
-      <!-- KPI row -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="kpis"></div>
-
-      <!-- Table -->
-      <div class="card p-5">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-          <i class="fas fa-table text-gray-500"></i> Annual Finding Volumes & Costs
-        </h3>
-        <div class="overflow-x-auto">
-          <table class="w-full text-right text-sm">
-            <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
-              <tr>
-                <th class="p-3 text-left">Module</th>
-                <th class="p-3">Red</th>
-                <th class="p-3">Amber</th>
-                <th class="p-3">Green</th>
-                <th class="p-3">Blue</th>
-                <th class="p-3">Total</th>
-                <th class="p-3">Hospital Cost</th>
-                <th class="p-3">Thynk Cost</th>
-                <th class="p-3">Guideline / CI</th>
-              </tr>
-            </thead>
-            <tbody id="rows" class="divide-y divide-gray-100"></tbody>
-            <tfoot class="bg-gray-50 font-bold text-gray-900 text-sm">
-              <tr>
-                <td class="p-3 text-left">All Modules</td>
-                <td id="totR" class="p-3"></td>
-                <td id="totA" class="p-3"></td>
-                <td id="totG" class="p-3"></td>
-                <td id="totB" class="p-3"></td>
-                <td id="totT" class="p-3"></td>
-                <td id="totHosp" class="p-3"></td>
-                <td id="totThynk" class="p-3"></td>
-                <td class="p-3"></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-
-      <!-- Staffing (Hospital only visible when selected) -->
-      <div class="card p-5" id="staffCard">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-3">
-          <i class="fas fa-users text-gray-500"></i> Hospital-Managed Staffing Model
-        </h3>
-        <p class="text-sm text-gray-600 mb-3">Available minutes/FTE (at <span id="ovhPct"></span>% overhead): <b id="availMins"></b>.</p>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
-              <tr>
-                <th class="p-3 text-left">Role</th>
-                <th class="p-3 text-right">Minutes</th>
-                <th class="p-3 text-right">FTE (ceil)</th>
-                <th class="p-3 text-right">Annual Cost</th>
-              </tr>
-            </thead>
-            <tbody id="staffRows" class="divide-y divide-gray-100"></tbody>
-            <tfoot class="bg-gray-50 font-bold">
-              <tr>
-                <td class="p-3">In-house subtotal</td>
-                <td class="p-3 text-right" id="staffFteCount"></td>
-                <td></td>
-                <td class="p-3 text-right" id="staffCost"></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-
-      <!-- DIY Noise & EHR -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="extras"></div>
-
-      <!-- Modules -->
-      <div class="card p-5">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-gray-900 flex items-center gap-3">
-            <i class="fas fa-cubes text-gray-500"></i> Activate Modules & Edit Severity Rates
-          </h3>
-          <div class="flex gap-2">
-            <button id="btnAll" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm">Enable All</button>
-            <button id="btnNone" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm">Disable All</button>
-          </div>
-        </div>
-        <p class="text-sm text-gray-500 mb-4">Toggle modules to include them in the calculation. Edit findings per 1,000 CTs as needed. Click a row to view definitions.</p>
-        <div id="modules" class="space-y-3"></div>
-      </div>
-
-      <div>
-        <h3 class="text-sm font-semibold text-gray-900 mb-2">Citations</h3>
-        <ol id="refs" class="text-xs text-gray-500 list-decimal list-inside space-y-1"></ol>
-      </div>
-
-    </section>
-  </div>
-</div>
-
-<script>
-/* ========= DATA ========= */
-const clinicalDefinitions = {
-  ADR:{ red:{def:'Mass >4cm, or suspicious features (e.g., >10 HU non-contrast).',rec:'Urgent endocrinology & likely surgical consult.'},
-        amber:{def:'Mass 1–4cm, indeterminate.',rec:'Adrenal protocol CT/MRI; endocrine referral.'},
-        green:{def:'<1cm or clear adenoma.',rec:'Consider annual imaging only if indicated.'},
-        blue:{def:'Already characterized / under endocrine surveillance.',rec:'Continue existing plan.'}},
-  AAA:{ red:{def:'AAA ≥5.5cm, TAA ≥6.0cm, or growth >0.5cm/yr.',rec:'Urgent vascular surgery eval.'},
-        amber:{def:'AAA 4.0–5.4cm; TAA 4.5–5.9cm.',rec:'Semi-annual US; consider vascular consult.'},
-        green:{def:'AAA 3.0–3.9cm.',rec:'Annual US surveillance.'},
-        blue:{def:'Documented program/post-EVAR/TEVAR.',rec:'Follow program cadence.'}},
-  BWL:{ red:{def:'Focal/asymmetric thickening suspicious for malignancy.',rec:'Colonoscopy or CT enterography; urgent GI.'},
-        amber:{def:'Diffuse/segmental inflammatory pattern.',rec:'Correlate clinically; consider GI.'},
-        green:{def:'Mild/reactive.',rec:'No further action if asymptomatic.'},
-        blue:{def:'IBD known & under GI.',rec:'Continue GI plan.'}},
-  CAC:{ red:{def:'Severe CAC (>400) or severe valve disease.',rec:'Urgent cardiology consult.'},
-        amber:{def:'Moderate CAC (100–400) or moderate valve disease.',rec:'Cardiology for risk stratification.'},
-        green:{def:'Mild CAC (1–99) or mild valve disease.',rec:'Inform PCP; routine risk management.'},
-        blue:{def:'Known CAD/managed.',rec:'Ensure statin intensity/adherence via PCP.'}},
-  EMP:{ red:{def:'Severe emphysema w/ exacerbation.',rec:'Urgent PCP or pulmonology.'},
-        amber:{def:'Moderate emphysema.',rec:'PFTs & management with PCP.'},
-        green:{def:'Mild/trace.',rec:'Smoking cessation counseling; inform PCP.'},
-        blue:{def:'On problem list/managed.',rec:'Follow COPD pathway.'}},
-  GBL:{ red:{def:'Wall thick. >3mm, mass, or significant ductal dilation.',rec:'GI/surg eval for possible malignancy.'},
-        amber:{def:'Polyp >1cm or moderate ductal dilation.',rec:'US & surgical consult.'},
-        green:{def:'Sludge/small polyps.',rec:'Usually incidental.'},
-        blue:{def:'Known GB/biliary under GI/surg.',rec:'Continue plan.'}},
-  BRE:{ red:{def:'BI-RADS 5.',rec:'Biopsy & surgical consult urgently.'},
-        amber:{def:'BI-RADS 4.',rec:'Biopsy; breast surgery/rad referral.'},
-        green:{def:'BI-RADS 3.',rec:'6-month follow-up mammogram.'},
-        blue:{def:'Enrolled in breast program.',rec:'Continue program interval.'}},
-  IPN:{ red:{def:'≥8mm solid, new, or growing nodule.',rec:'PET-CT and/or biopsy; pulmonology.'},
-        amber:{def:'4–8mm solid or subsolid.',rec:'LDCT 3–6 mo (Fleischner).'},
-        green:{def:'<4mm solid or stable.',rec:'No routine follow-up (Fleischner).'},
-        blue:{def:'In active surveillance.',rec:'Continue surveillance cadence.'}},
-  ILA:{ red:{def:'Fibrotic ILA with honeycombing.',rec:'Pulmonology for likely ILD.'},
-        amber:{def:'Non-fibrotic ILA >5% of zone.',rec:'Pulmonology eval.'},
-        green:{def:'Trace ILA.',rec:'Inform PCP; no specific FU.'},
-        blue:{def:'Known ILD/ILA with plan.',rec:'Continue ILD pathway.'}},
-  LIV:{ red:{def:'LI-RADS 5 or new/growing in cirrhosis.',rec:'Hepatology/oncology urgently.'},
-        amber:{def:'LI-RADS 4 or indeterminate >1cm.',rec:'Multiphasic MRI/CT; GI/Hep referral.'},
-        green:{def:'Simple cyst/hemangioma.',rec:'Benign; no FU.'},
-        blue:{def:'Benign lesion under plan.',rec:'Continue plan.'}},
-  LCS:{ red:{def:'Lung-RADS 4B/4X.',rec:'Biopsy/diagnostic workup; pulmonology.'},
-        amber:{def:'Lung-RADS 4A.',rec:'3-mo LDCT or PET/CT.'},
-        green:{def:'Lung-RADS 3.',rec:'6-mo LDCT.'},
-        blue:{def:'Enrolled in screening program.',rec:'Continue scheduled LDCT.'}},
-  LYM:{ red:{def:'Necrotic or >1.5cm short axis.',rec:'Biopsy; oncology/ID as indicated.'},
-        amber:{def:'1–1.5cm.',rec:'Clinical correlation; consider 3-mo imaging.'},
-        green:{def:'Normal/reactive.',rec:'No FU unless indicated.'},
-        blue:{def:'Known/reactive under care.',rec:'Continue plan.'}},
-  OVR:{ red:{def:'O-RADS 5.',rec:'Gyn oncology urgently.'},
-        amber:{def:'O-RADS 4.',rec:'Gyn consult; likely MRI.'},
-        green:{def:'Simple cyst or O-RADS 3.',rec:'US FU based on size/age.'},
-        blue:{def:'Under Gyn/Gyn-Onc pathway.',rec:'Continue plan.'}},
-  PAN:{ red:{def:'Solid mass or cyst ≥3cm worrisome features.',rec:'GI/surg onc urgently.'},
-        amber:{def:'Cyst 1–3cm no worrisome features.',rec:'MRCP 6–12 mo.'},
-        green:{def:'Simple cyst <1cm.',rec:'No FU required.'},
-        blue:{def:'Under cyst/IPMN surveillance.',rec:'Continue cadence.'}},
-  PRP:{ red:{def:'PI-RADS 5 or EPE.',rec:'Urology urgently (biopsy/staging).'},
-        amber:{def:'PI-RADS 4.',rec:'Urology; consider biopsy.'},
-        green:{def:'BPH or PI-RADS 3.',rec:'PSA monitoring with PCP.'},
-        blue:{def:'Active surveillance.',rec:'Continue urology plan.'}},
-  REN:{ red:{def:'Enhancing mass >4cm or Bosniak IV.',rec:'Urology surgical eval.'},
-        amber:{def:'1–4cm enhancing or Bosniak III.',rec:'Urology; possible surveillance/treat.'},
-        green:{def:'Simple cyst I/II; small non-enhancing.',rec:'No FU required.'},
-        blue:{def:'Under urology management.',rec:'Continue plan.'}},
-  SPL:{ red:{def:'Growing/complex solid lesion.',rec:'Surgery or heme consult.'},
-        amber:{def:'Indeterminate >1cm.',rec:'MRI for characterization.'},
-        green:{def:'Simple cyst/hemangioma.',rec:'No FU required.'},
-        blue:{def:'Stable/benign under care.',rec:'Continue plan.'}},
-  THY:{ red:{def:'TI-RADS 5.',rec:'FNA; endocrinology urgently.'},
-        amber:{def:'TI-RADS 4.',rec:'FNA; endocrine referral.'},
-        green:{def:'TI-RADS 3.',rec:'US in 12 mo.'},
-        blue:{def:'Under endocrine pathway.',rec:'Continue plan.'}},
-  VFX:{ red:{def:'>40% height loss or pathologic.',rec:'Ortho/spine urgently.'},
-        amber:{def:'25–40% height loss.',rec:'PCP osteo mgmt; consider ortho.'},
-        green:{def:'<25% height loss.',rec:'PCP osteoporosis eval.'},
-        blue:{def:'Under endocrine/ortho care.',rec:'Continue plan.'}}
-};
-
-const references = [
-  {id:1, txt:'Fleischner Society 2017 pulmonary nodule guidelines [Radiology].'},
-  {id:2, txt:'ACR Lung-RADS v2022 (lung screening).'},
-  {id:3, txt:'Fleischner position paper on ILAs (2020).'},
-  {id:4, txt:'ACC/AHA prevention guidelines; CAC thresholds (Agatston).'},
-  {id:5, txt:'2022 ACC/AHA Aortic Disease Guideline (AAA/TAA).'},
-  {id:6, txt:'Bosniak v2019; ACR Incidental Renal Mass.'},
-  {id:7, txt:'ACR/AGA pancreatic cyst management.'},
-  {id:8, txt:'ACR Incidental Adrenal Mass white paper.'},
-  {id:9, txt:'ACR TI-RADS (2017; updates).'},
-  {id:10, txt:'ACR LI-RADS & incidental liver lesion guidance.'},
-  {id:11, txt:'ACR BI-RADS (5th ed.).'},
-  {id:12, txt:'PI-RADS v2.1.'},
-  {id:13, txt:'ACR O-RADS.'},
-  {id:14, txt:'AGA: colonoscopy after acute diverticulitis.'},
-  {id:15, txt:'GOLD COPD reports.'},
-  {id:16, txt:'Incidental splenic lesion management (reviews).'},
-  {id:17, txt:'SRU/ESGAR gallbladder polyp guidance.'},
-  {id:18, txt:'AACE VFA/osteoporosis guidance.'},
-  {id:19, txt:'ACR incidental lymphadenopathy thresholds.'}
-];
-
-/* ILA => Resolution Specialist (no nurse) */
-const defaultModules = [
-  { key:'IPN', name:'Incidental Pulmonary Nodule (Fleischner)', primaryRole:'Navigator', distro:{ red:5, amber:20, green:110 }, refs:[1] },
-  { key:'LCS', name:'Lung Cancer Screening (Lung-RADS)', primaryRole:'Navigator', distro:{ red:4, amber:15, green:86 }, refs:[2] },
-  { key:'ILA', name:'Interstitial Lung Abnormalities', primaryRole:'Specialist', distro:{ red:2, amber:12, green:40 }, refs:[3] }, /* changed */
-  { key:'CAC', name:'Coronary Artery Calcification / Valvular', primaryRole:'Specialist', distro:{ red:10, amber:90, green:430 }, refs:[4] },
-  { key:'AAA', name:'Aneurysm (AAA/TAA)', primaryRole:'Specialist', distro:{ red:2, amber:8, green:30 }, refs:[5] },
-  { key:'REN', name:'Renal Mass/Bosniak', primaryRole:'Specialist', distro:{ red:8, amber:24, green:60 }, refs:[6] },
-  { key:'PAN', name:'Pancreatic Cyst/Mass', primaryRole:'Specialist', distro:{ red:3, amber:12, green:35 }, refs:[7] },
-  { key:'ADR', name:'Adrenal Incidentaloma', primaryRole:'Specialist', distro:{ red:1, amber:6, green:40 }, refs:[8] },
-  { key:'THY', name:'Thyroid (TI-RADS)', primaryRole:'Specialist', distro:{ red:4, amber:50, green:110 }, refs:[9] },
-  { key:'LIV', name:'Liver Lesion (LI-RADS ≥1cm/indeterminate)', primaryRole:'Specialist', distro:{ red:2, amber:15, green:80 }, refs:[10] },
-  { key:'BRE', name:'Breast (BI-RADS 0,3–5)', primaryRole:'Navigator', distro:{ red:3, amber:20, green:60 }, refs:[11] },
-  { key:'PRP', name:'Prostate (PI-RADS 4–5)', primaryRole:'Specialist', distro:{ red:3, amber:10, green:20 }, refs:[12] },
-  { key:'OVR', name:'Ovarian Mass (O-RADS)', primaryRole:'Specialist', distro:{ red:2, amber:10, green:25 }, refs:[13] },
-  { key:'BWL', name:'Bowel Wall Thickening', primaryRole:'Specialist', distro:{ red:2, amber:8, green:20 }, refs:[14] },
-  { key:'EMP', name:'Emphysema/COPD', primaryRole:'Specialist', distro:{ red:1, amber:5, green:30 }, refs:[15] },
-  { key:'SPL', name:'Splenic Lesion', primaryRole:'Specialist', distro:{ red:1, amber:4, green:10 }, refs:[16] },
-  { key:'GBL', name:'Gallbladder Polyp', primaryRole:'Specialist', distro:{ red:1, amber:6, green:20 }, refs:[17] },
-  { key:'VFX', name:'Vertebral Fracture', primaryRole:'Specialist', distro:{ red:1, amber:5, green:15 }, refs:[18] },
-  { key:'LYM', name:'Lymphadenopathy (incidental)', primaryRole:'Specialist', distro:{ red:2, amber:10, green:30 }, refs:[19] }
-];
-
-const state = {
-  modules: JSON.parse(JSON.stringify(defaultModules)).map(m => ({...m, on:true})),
-  params: {}
-};
-
-/* ========= HELPERS ========= */
-const $ = id => document.getElementById(id);
-const money = x => '$' + (x||0).toLocaleString(undefined,{maximumFractionDigits:0});
-const fmt0 = x => (x||0).toLocaleString(undefined,{maximumFractionDigits:0});
-const availMinutes = overhead => 1920*60*(1-overhead);
-function ciLabel(n, p, z){ if(!n||n<=0) return '—';
-  const ph = p/100; const se = Math.sqrt(ph*(1-ph)/n); const lo = Math.max(0, ph - z*se), hi = Math.min(1, ph + z*se);
-  return `${Math.round(ph*100)}% (CI: ${Math.round(lo*100)}–${Math.round(hi*100)}%)`;
-}
-
-/* ========= UI RENDERERS ========= */
-function renderWorkflow(model){
-  const step = (icon, title, text, color='indigo') => `
-    <div class="flex flex-col items-center text-center w-40">
-      <div class="w-16 h-16 rounded-full bg-${color}-100 flex items-center justify-center border-4 border-white shadow">
-        <i class="fas ${icon} text-${color}-600 text-xl"></i>
-      </div>
-      <h4 class="text-sm font-semibold mt-3">${title}</h4>
-      <p class="text-xs text-gray-500">${text}</p>
-    </div>`;
-  const arrow = () => `<div class="self-center flex-grow flex items-center justify-center mx-1"><i class="fas fa-long-arrow-alt-right text-gray-300 text-2xl"></i></div>`;
-
-  const flows = {
-    hospital_managed:
-      step('fa-file-medical-alt','Ingestion','HL7/DICOM Feed')+arrow()+
-      step('fa-brain','Thynk Intelligence','NLP • Rules • Zero Noise')+arrow()+
-      step('fa-users','Hospital Staff','Your team manages cases')+arrow()+
-      step('fa-tasks','Coordination','Orders • Outreach • Scheduling')+arrow()+
-      step('fa-check-circle','Loop Closed','Efficient follow-up','green'),
-    thynk_managed:
-      step('fa-file-medical-alt','Ingestion','HL7/DICOM Feed')+arrow()+
-      step('fa-brain','Thynk Intelligence','NLP • Rules • Zero Noise')+arrow()+
-      step('fa-headset','Thynk Team','We own the worklist','purple')+arrow()+
-      step('fa-phone-alt','Full-Service Navigation','Outreach & scheduling','purple')+arrow()+
-      step('fa-check-circle','Loop Closed','Zero hospital FTE','green')
-  };
-  $('workflow').innerHTML = `
-    <div class="p-4 bg-gray-50 rounded-lg border">
-      <h4 class="font-semibold text-center mb-4 text-base">
-        ${model==='hospital_managed'?'Hospital-Managed Program Workflow':'Thynk Managed Service Workflow (ThynkComplete)'}
-      </h4>
-      <div class="flex items-start justify-center flex-wrap gap-y-4 gap-x-2">${flows[model]}</div>
-    </div>`;
-}
-
-function kpiCard(title, value, icon, color, sub=''){
-  return `
-  <div class="card p-5 flex items-start gap-4">
-    <div class="w-12 h-12 rounded-lg bg-${color}-100 flex items-center justify-center shrink-0">
-      <i class="fas ${icon} text-${color}-600"></i>
-    </div>
-    <div>
-      <p class="text-sm font-medium text-gray-500">${title}</p>
-      <p class="text-2xl font-bold">${value}</p>
-      ${sub?`<p class="text-xs text-gray-500 mt-1">${sub}</p>`:''}
-    </div>
-  </div>`;
-}
-
-function moduleCard(m, idx){
-  const defs = clinicalDefinitions[m.key];
-  const tag = m.primaryRole==='Navigator'
-    ? '<span class="pill bg-blue-100 text-blue-800">Clinical Navigator</span>'
-    : '<span class="pill bg-green-100 text-green-800">Resolution Specialist</span>';
-
-  return `
-  <div class="card p-3" data-idx="${idx}">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <label class="relative inline-flex items-center cursor-pointer">
-          <input type="checkbox" class="peer sr-only mod-toggle" ${m.on?'checked':''} data-idx="${idx}">
-          <span class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-indigo-600 transition"></span>
-          <span class="-ml-11 w-5 h-5 bg-white rounded-full translate-x-1 transition absolute peer-checked:translate-x-6"></span>
-        </label>
-        <span class="font-semibold">${m.name}</span>
-        ${tag}
-      </div>
-      <button class="text-gray-400 hover:text-gray-600 row-expander"><i class="fas fa-chevron-down chev"></i></button>
     </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
-      <p class="text-xs text-gray-500 col-span-2 lg:col-span-1">Findings per 1k CTs:</p>
-      ${['red','amber','green'].map(k=>`
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-medium ${k==='red'?'text-red-600':k==='amber'?'text-orange-600':'text-green-600'} w-12 capitalize">${k}</span>
-          <input type="number" class="input w-full mod-distro" data-idx="${idx}" data-k="${k}" value="${m.distro[k]}" step="1">
-        </div>`).join('')}
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-dollar-sign text-thynk-green"></i> Staff Rates ($/hr)</h2>
+      <div class="grid grid-cols-3 gap-3">
+        <label><span class="label">Resolution Specialist</span><input id="rateSpecialist" value="28" class="input"></label>
+        <label><span class="label">Clinical Navigator</span><input id="rateNavigator" value="65" class="input"></label>
+        <label><span class="label">PCP “Noise” Value</span><input id="ratePCP" value="240" class="input"></label>
+      </div>
     </div>
 
-    <div class="hidden mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-2 gap-3 details">
-      ${defs?`
-      <div class="p-3 rounded-lg bg-red-50 border border-red-200">
-        <h5 class="font-bold text-red-700">Red</h5>
-        <p class="text-xs text-gray-700 mt-1"><b>Definition:</b> ${defs.red.def}</p>
-        <p class="text-xs text-gray-700"><b>Recommendation:</b> ${defs.red.rec}</p>
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-rocket text-thynk-blue"></i> Thynk Efficiency Model</h2>
+      <div class="grid grid-cols-3 gap-3">
+        <label><span class="label">Efficiency Gain (%)</span><input id="thynkEff" value="35" class="input"></label>
+        <label><span class="label">Spec $/hr</span><input id="rateThynkSpec" value="24" class="input"></label>
+        <label><span class="label">Nav $/hr</span><input id="rateThynkNav" value="55" class="input"></label>
       </div>
-      <div class="p-3 rounded-lg bg-orange-50 border border-orange-200">
-        <h5 class="font-bold text-orange-700">Amber</h5>
-        <p class="text-xs text-gray-700 mt-1"><b>Definition:</b> ${defs.amber.def}</p>
-        <p class="text-xs text-gray-700"><b>Recommendation:</b> ${defs.amber.rec}</p>
-      </div>
-      <div class="p-3 rounded-lg bg-green-50 border border-green-200">
-        <h5 class="font-bold text-green-700">Green</h5>
-        <p class="text-xs text-gray-700 mt-1"><b>Definition:</b> ${defs.green.def}</p>
-        <p class="text-xs text-gray-700"><b>Recommendation:</b> ${defs.green.rec}</p>
-      </div>
-      <div class="p-3 rounded-lg bg-blue-50 border border-blue-200">
-        <h5 class="font-bold text-blue-700">Blue</h5>
-        <p class="text-xs text-gray-700 mt-1"><b>Definition:</b> ${defs.blue.def}</p>
-        <p class="text-xs text-gray-700"><b>Recommendation:</b> ${defs.blue.rec}</p>
-      </div>`:'<p class="text-xs text-gray-500">No definitions available.</p>'}
     </div>
-  </div>`;
-}
 
-/* ========= CALC ========= */
-function params(){
-  return {
-    ct:+$('ctVolume').value,
-    blueRate:(+$('blueRate').value)/100,
-    overhead:(+$('overhead').value)/100,
-    model:$('supportModel').value,
-    // hospital rates
-    rateSpecialist:+$('rateSpecialist').value, rateNavigator:+$('rateNavigator').value, ratePCP:+$('ratePCP').value,
-    // minutes
-    tBlue:+$('tBlue').value, tGreen:+$('tGreen').value, tAmber:+$('tAmber').value, tRed:+$('tRed').value,
-    // thynk FTE model
-    thynkEff:(+$('thynkEff').value)/100, rateThynkSpec:+$('rateThynkSpec').value, rateThynkNav:+$('rateThynkNav').value,
-    // competitor/DIY
-    noiseRate:+$('noiseRate').value, noiseMin:+$('noiseMin').value,
-    epicBuild:+$('epicBuild').value, epicMaint:+$('epicMaint').value, rateIT:+$('rateIT').value, rateSME:+$('rateSME').value,
-    // confidence
-    confOn:$('confOn').checked, precision:+$('precision').value, z:+$('ciLevel').value
-  };
-}
+    <button id="calcBtn" class="btn-primary w-full mt-2">Recalculate</button>
+  </section>
 
-function calc(){
-  const p = params(); state.params=p;
-  const active = state.modules.filter(m=>m.on);
-  const scale = p.ct/1000;
-  const t = {blue:p.tBlue,green:p.tGreen,amber:p.tAmber,red:p.tRed};
+  <!-- OUTPUT -->
+  <section class="space-y-6 xl:col-span-2">
+    <div id="workflow" class="card text-center py-10">Loading workflow diagram…</div>
+    <div id="kpis" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+    <div id="table" class="card overflow-x-auto"></div>
+  </section>
 
-  let agg = {blue:0, green:0, amber:0, red:0, total:0};
-  let minutesByRole = { Specialist:0, Navigator:0 };
+</main>
 
-  const rows = active.map(m=>{
-    const red = m.distro.red*scale;
-    const amber = m.distro.amber*scale;
-    const green = m.distro.green*scale;
-    const tot = red+amber+green;
-    const blue = tot*p.blueRate;
-    const rem = tot-blue; const factor = rem/(tot||1);
-    const r=red*factor, a=amber*factor, g=green*factor;
+<footer class="text-center py-8 text-xs text-gray-500">
+  © Thynk Health 2025 | Demo workflow modeler
+</footer>
 
-    agg.red+=r; agg.amber+=a; agg.green+=g; agg.blue+=blue; agg.total+=tot;
-
-    const mins = {
-      blue:blue*t.blue, green:g*t.green, amber:a*t.amber, red:r*t.red
-    };
-    const modMinutes = mins.blue+mins.green+mins.amber+mins.red;
-    minutesByRole[m.primaryRole]+=modMinutes;
-
-    return {m, r, a, g, blue, tot, modMinutes};
-  });
-
-  const totalMinutes = minutesByRole.Specialist + minutesByRole.Navigator;
-  const avail = availMinutes(p.overhead);
-  const fteSpec = minutesByRole.Specialist/avail;
-  const fteNav  = minutesByRole.Navigator/avail;
-
-  const hospFteSpec = Math.ceil(fteSpec);
-  const hospFteNav  = Math.ceil(fteNav);
-  const hospCost = (hospFteSpec*p.rateSpecialist*1920) + (hospFteNav*p.rateNavigator*1920);
-
-  // Thynk FTE model (efficiency reduces minutes)
-  const eff = Math.max(0, 1 - p.thynkEff); // 35% gain => 0.65 multiplier
-  const thynkMinutesSpec = minutesByRole.Specialist * eff;
-  const thynkMinutesNav  = minutesByRole.Navigator  * eff;
-  const thynkFteSpec = thynkMinutesSpec/avail;
-  const thynkFteNav  = thynkMinutesNav/avail;
-  // fractional FTEs allowed (scale)
-  const thynkCost = (thynkFteSpec*p.rateThynkSpec*1920) + (thynkFteNav*p.rateThynkNav*1920);
-
-  // Allocate hospital & thynk cost to modules proportionally by minutes
-  rows.forEach(r=>{
-    const share = totalMinutes? (r.modMinutes/totalMinutes) : 0;
-    r.hospCost  = share*hospCost;
-    r.thynkCost = share*thynkCost;
-  });
-
-  // Extras: PCP time saved from noisy competitors + EHR amortized cost
-  const extraAlerts = (p.ct/1000)*p.noiseRate;
-  const pcpMinSaved = extraAlerts*p.noiseMin;
-  const pcpSavings = (pcpMinSaved/60)*p.ratePCP;
-
-  const epicBuildCost = p.epicBuild*p.rateIT + p.epicBuild*0.5*p.rateSME;
-  const epicAnnualCost = p.epicMaint*p.rateIT + p.epicMaint*0.5*p.rateSME;
-  const epic5yr = epicBuildCost/5 + epicAnnualCost;
-
-  /* KPIs */
-  const finalHosp = (p.model==='hospital_managed')?hospCost:0;
-  const kpiHTML = [
-    kpiCard('Annual Hospital-Managed Cost', money(finalHosp), 'fa-hospital-user','blue', `Based on ${fmt0(p.model==='hospital_managed'?(hospFteSpec+hospFteNav):0)} FTEs`),
-    kpiCard('Annual Thynk Managed Cost', money(thynkCost), 'fa-handshake','purple', 'FTE x rates x efficiency'),
-    kpiCard('Annual Savings with Thynk', money(finalHosp>0?(finalHosp - thynkCost):0), 'fa-piggy-bank','green', 'vs. Hospital-Managed Labor')
-  ].join('');
-  $('kpis').innerHTML = kpiHTML;
-
-  /* Table */
-  const rowsHTML = rows.map(r=>{
-    const n = r.tot; const ciTxt = state.params.confOn ? ciLabel(n, state.params.precision, state.params.z) : '—';
-    const gid = r.m.refs?.map(i=>`[${i}]`).join(', ') || '';
-    return `<tr class="hover:bg-gray-50">
-      <td class="p-3 text-left">
-        <div class="flex items-center gap-2">
-          <span class="font-medium">${r.m.name}</span>
-          ${state.params.confOn?`<span class="pill bg-gray-100 text-gray-700">Guideline ${gid||''}</span>`:''}
-        </div>
-      </td>
-      <td class="p-3 text-red-600 font-semibold">${fmt0(r.r)}</td>
-      <td class="p-3 text-orange-600 font-semibold">${fmt0(r.a)}</td>
-      <td class="p-3 text-green-600 font-semibold">${fmt0(r.g)}</td>
-      <td class="p-3 text-blue-600 font-semibold">${fmt0(r.blue)}</td>
-      <td class="p-3 font-semibold">${fmt0(r.tot)}</td>
-      <td class="p-3 font-semibold">${money(p.model==='hospital_managed'?r.hospCost:0)}</td>
-      <td class="p-3 text-purple-800 font-semibold">${money(r.thynkCost)}</td>
-      <td class="p-3 text-xs text-gray-600">${state.params.confOn?ciTxt:'—'}</td>
-    </tr>`;
-  }).join('');
-  $('rows').innerHTML = rowsHTML;
-  $('totR').textContent = fmt0(agg.red);
-  $('totA').textContent = fmt0(agg.amber);
-  $('totG').textContent = fmt0(agg.green);
-  $('totB').textContent = fmt0(agg.blue);
-  $('totT').textContent = fmt0(agg.total);
-  $('totHosp').textContent = money(p.model==='hospital_managed'?hospCost:0);
-  $('totThynk').textContent = money(thynkCost);
-
-  /* Staffing (hospital view) */
-  $('staffCard').style.display = (p.model==='hospital_managed')?'block':'none';
-  $('ovhPct').textContent = Math.round(p.overhead*100);
-  $('availMins').textContent = fmt0(avail);
-
-  if(p.model==='hospital_managed'){
-    const specCost = hospFteSpec*p.rateSpecialist*1920;
-    const navCost  = hospFteNav*p.rateNavigator*1920;
-    $('staffRows').innerHTML = `
-      <tr><td class="p-3 font-medium">Resolution Specialist</td><td class="p-3 text-right">${fmt0(minutesByRole.Specialist)}</td><td class="p-3 text-right font-bold">${fmt0(hospFteSpec)}</td><td class="p-3 text-right font-bold">${money(specCost)}</td></tr>
-      <tr><td class="p-3 font-medium">Clinical Navigator</td><td class="p-3 text-right">${fmt0(minutesByRole.Navigator)}</td><td class="p-3 text-right font-bold">${fmt0(hospFteNav)}</td><td class="p-3 text-right font-bold">${money(navCost)}</td></tr>`;
-    $('staffFteCount').textContent = fmt0(hospFteSpec+hospFteNav);
-    $('staffCost').textContent = money(hospCost);
-  }
-
-  /* Extras */
-  $('extras').innerHTML = [
-    kpiCard('PCP Time Value Saved', money(pcpSavings), 'fa-user-doctor','red', 'vs. “noisy” models'),
-    kpiCard('DIY EHR Build/Maint. (5-yr annualized)', money(epic5yr), 'fa-screwdriver-wrench','orange', '')
-  ].join('');
-}
-
-/* ========= MODULE LIST ========= */
-function renderModules(){
-  const root = $('modules'); root.innerHTML = '';
-  state.modules.forEach((m, i)=>{ root.insertAdjacentHTML('beforeend', moduleCard(m,i)); });
-
-  root.querySelectorAll('.mod-toggle').forEach(cb=>{
-    cb.addEventListener('change', e=>{
-      const i = +e.target.dataset.idx;
-      state.modules[i].on = e.target.checked;
-      calc();
-    });
-  });
-  root.querySelectorAll('.mod-distro').forEach(inp=>{
-    inp.addEventListener('input', e=>{
-      const i = +e.target.dataset.idx; const k = e.target.dataset.k;
-      state.modules[i].distro[k] = +e.target.value;
-      calc();
-    });
-  });
-  root.querySelectorAll('.row-expander').forEach(btn=>{
-    btn.addEventListener('click', e=>{
-      const card = e.target.closest('.card');
-      const details = card.querySelector('.details');
-      card.classList.toggle('exp');
-      details.classList.toggle('hidden');
-    });
-  });
-
-  $('btnAll').onclick = ()=>{ state.modules.forEach(m=>m.on=true); renderModules(); calc(); };
-  $('btnNone').onclick= ()=>{ state.modules.forEach(m=>m.on=false); renderModules(); calc(); };
-}
-
-/* ========= HOOKS ========= */
-document.querySelectorAll('#ctVolume, #supportModel, #blueRate, #overhead, #rateSpecialist, #rateNavigator, #ratePCP, #tBlue, #tGreen, #tAmber, #tRed, #thynkEff, #rateThynkSpec, #rateThynkNav, #noiseRate, #noiseMin, #epicBuild, #epicMaint, #rateIT, #rateSME, #confOn, #precision, #ciLevel')
-.forEach(el => { el.addEventListener('input', calc); el.addEventListener('change', calc); });
-
-/* ========= INIT ========= */
-function init(){
-  renderWorkflow($('supportModel').value);
-  renderModules();
-  calc();
-  $('supportModel').addEventListener('change',()=>renderWorkflow($('supportModel').value));
-  $('refs').innerHTML = references.map(r=>`<li id="r-${r.id}">${r.txt}</li>`).join('');
-}
-init();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
