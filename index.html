@@ -10,25 +10,19 @@
 </head>
 <body class="font-inter bg-thynk-gray text-gray-800">
 
-<!-- HEADER -->
-<header class="text-center py-10 border-b border-gray-200 bg-white shadow-sm">
-  <img src="https://www.thynkhealth.com/wp-content/uploads/2020/06/ThynkHealth_Logo.svg"
-       alt="Thynk Health" class="mx-auto h-10 mb-3">
-  <h1 class="text-4xl md:text-5xl font-extrabold text-thynk-blue tracking-tight">
-    Workflow Modeler
-  </h1>
-  <p class="mt-2 text-gray-600 max-w-2xl mx-auto">
-    Model your incidental-findings workflow — compare hospital-managed vs Thynk Managed programs.
+<header class="text-center py-8 bg-white border-b border-gray-200">
+  <h1 class="text-4xl md:text-5xl font-extrabold text-thynk-blue tracking-tight">Workflow Modeler</h1>
+  <p class="mt-2 text-gray-600 max-w-3xl mx-auto">
+    Select your modules, tune assumptions, and compare a Hospital-Managed program vs. Thynk Managed (FTE + efficiency model).
   </p>
 </header>
 
-<!-- MAIN -->
 <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 xl:grid-cols-3 gap-8">
 
-  <!-- INPUTS -->
+  <!-- LEFT: Assumptions -->
   <section class="space-y-6 xl:col-span-1">
     <div class="card">
-      <h2 class="card-title"><i class="fas fa-sliders text-thynk-blue"></i> Core Assumptions</h2>
+      <h2 class="card-title"><i class="fa-solid fa-sliders"></i> Core Assumptions</h2>
       <label class="block mb-3">
         <span class="label">Annual CT Studies</span>
         <input id="ctVolume" type="number" value="40000" step="1000" class="input">
@@ -41,44 +35,92 @@
         </select>
       </label>
       <div class="grid grid-cols-2 gap-3">
-        <label><span class="label">Blue Rate (%)</span><input id="blueRate" value="12" class="input" type="number"></label>
-        <label><span class="label">Staff Overhead (%)</span><input id="overhead" value="20" class="input" type="number"></label>
+        <label><span class="label">“Blue” Rate (%)</span><input id="blueRate" type="number" value="12" class="input"></label>
+        <label><span class="label">Staff Overhead (%)</span><input id="overhead" type="number" value="20" class="input"></label>
       </div>
     </div>
 
     <div class="card">
-      <h2 class="card-title"><i class="fas fa-dollar-sign text-thynk-green"></i> Staff Rates ($/hr)</h2>
-      <div class="grid grid-cols-3 gap-3">
-        <label><span class="label">Resolution Specialist</span><input id="rateSpecialist" value="28" class="input"></label>
-        <label><span class="label">Clinical Navigator</span><input id="rateNavigator" value="65" class="input"></label>
-        <label><span class="label">PCP “Noise” Value</span><input id="ratePCP" value="240" class="input"></label>
+      <h2 class="card-title"><i class="fa-solid fa-clock"></i> Time per Severity (mins)</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <label><span class="label">Blue</span><input id="tBlue"  type="number" value="1"  step="0.5" class="input"></label>
+        <label><span class="label">Green</span><input id="tGreen" type="number" value="2"  step="0.5" class="input"></label>
+        <label><span class="label">Amber</span><input id="tAmber" type="number" value="5"  step="0.5" class="input"></label>
+        <label><span class="label">Red</span><input id="tRed"   type="number" value="10" step="0.5" class="input"></label>
+      </div>
+      <p class="hint mt-2">These are applied to each module’s red/amber/green plus “blue” (already managed) population.</p>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title"><i class="fa-solid fa-user-nurse"></i> Hospital Staff Rates ($/hr)</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label><span class="label">Resolution Specialist</span><input id="rateSpecialist" type="number" value="28" class="input"></label>
+        <label><span class="label">Clinical Navigator</span><input id="rateNavigator" type="number" value="65" class="input"></label>
+        <label><span class="label">PCP “Noise” Value</span><input id="ratePCP" type="number" value="240" class="input"></label>
       </div>
     </div>
 
     <div class="card">
-      <h2 class="card-title"><i class="fas fa-rocket text-thynk-blue"></i> Thynk Efficiency Model</h2>
-      <div class="grid grid-cols-3 gap-3">
-        <label><span class="label">Efficiency Gain (%)</span><input id="thynkEff" value="35" class="input"></label>
-        <label><span class="label">Spec $/hr</span><input id="rateThynkSpec" value="24" class="input"></label>
-        <label><span class="label">Nav $/hr</span><input id="rateThynkNav" value="55" class="input"></label>
+      <h2 class="card-title"><i class="fa-solid fa-rocket"></i> Thynk Managed (FTE + Efficiency)</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <label><span class="label">Efficiency Gain (%)</span><input id="thynkEff" type="number" value="35" class="input"></label>
+        <label><span class="label">Spec $/hr</span><input id="rateThynkSpec" type="number" value="24" class="input"></label>
+        <label><span class="label">Nav $/hr</span><input id="rateThynkNav" type="number" value="55" class="input"></label>
       </div>
+      <p class="hint mt-2">Thynk cost = fractional FTE × rates × 1920 hrs, after efficiency reduces minutes. No per-case fees.</p>
     </div>
 
-    <button id="calcBtn" class="btn-primary w-full mt-2">Recalculate</button>
+    <button id="recalc" class="btn-primary w-full">Recalculate</button>
   </section>
 
-  <!-- OUTPUT -->
+  <!-- RIGHT: Outputs + Modules -->
   <section class="space-y-6 xl:col-span-2">
-    <div id="workflow" class="card text-center py-10">Loading workflow diagram…</div>
-    <div id="kpis" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
-    <div id="table" class="card overflow-x-auto"></div>
-  </section>
 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5" id="kpis"></div>
+
+    <div class="card">
+      <h2 class="card-title"><i class="fa-solid fa-sitemap"></i> Workflow</h2>
+      <div id="workflow"></div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title"><i class="fa-solid fa-table"></i> Annual Volumes & Costs</h2>
+      <div id="table" class="overflow-x-auto"></div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="card-title mb-0"><i class="fa-solid fa-cubes"></i> Modules (select & expand)</h2>
+        <div class="flex gap-2">
+          <button id="enableAll" class="btn-ghost">Enable All</button>
+          <button id="disableAll" class="btn-ghost">Disable All</button>
+        </div>
+      </div>
+      <p class="hint mb-4">Check modules to include; edit findings per 1,000 CTs. Click a card to view clinical definitions and this module’s minutes/FTE share.</p>
+      <div id="modules" class="space-y-3"></div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title"><i class="fa-solid fa-circle-info"></i> How we calculate FTE, Cost, and ROI</h2>
+      <ul class="list-disc ml-6 space-y-2 text-sm text-gray-700">
+        <li><b>Findings volume:</b> For each enabled module, red/amber/green per 1k CTs are scaled by your annual CTs. “Blue” = % you set that are already managed or not actionable.</li>
+        <li><b>Minutes:</b> We multiply counts by your <i>Time per Severity</i> (Blue/Green/Amber/Red).</li>
+        <li><b>FTE:</b> Minutes are split by primary role (Navigator vs Resolution Specialist). Annual available minutes/FTE = <code>1920 × 60 × (1 − overhead)</code>.</li>
+        <li><b>Hospital Cost:</b> Role FTEs are <i>ceiled</i> to whole people, then × hourly rate × 1920.</li>
+        <li><b>Thynk Cost:</b> We apply your efficiency to minutes, compute fractional FTEs, then × Thynk rates × 1920. No per-case fees.</li>
+        <li><b>ROI:</b> Annual savings = Hospital Cost − Thynk Cost (if you select Hospital-Managed model, both are still shown for comparison).</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-sm font-semibold text-gray-900 mb-2">Citations</h3>
+      <ol id="refs" class="text-xs text-gray-500 list-decimal list-inside space-y-1"></ol>
+    </div>
+
+  </section>
 </main>
 
-<footer class="text-center py-8 text-xs text-gray-500">
-  © Thynk Health 2025 | Demo workflow modeler
-</footer>
+<footer class="text-center py-8 text-xs text-gray-500">© Thynk Health 2025 | Demo workflow modeler</footer>
 
 <script src="app.js"></script>
 </body>
