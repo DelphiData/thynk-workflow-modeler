@@ -5,15 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Thynk Health | Workflow Modeler</title>
 
-  <!-- Tailwind (CDN for GitHub Pages). For production, you can build locally. -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-
-  <!-- Our styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="font-inter bg-thynk-gray text-gray-800">
-  <!-- Header -->
   <header class="text-center py-8 bg-white border-b border-gray-200">
     <h1 class="text-4xl md:text-5xl font-extrabold text-thynk-blue tracking-tight">Workflow Modeler</h1>
     <p class="mt-2 text-gray-600 max-w-3xl mx-auto">
@@ -21,19 +17,15 @@
     </p>
   </header>
 
-  <!-- Main -->
   <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 xl:grid-cols-3 gap-8">
-
     <!-- LEFT: Assumptions -->
     <section class="space-y-6 xl:col-span-1">
       <div class="card">
         <h2 class="card-title"><i class="fa-solid fa-sliders"></i> Core Assumptions</h2>
-
         <label class="block mb-3">
           <span class="label">Annual CT Studies</span>
           <input id="ctVolume" type="number" value="40000" step="1000" class="input" />
         </label>
-
         <label class="block mb-3">
           <span class="label">Support Model</span>
           <select id="supportModel" class="input">
@@ -41,7 +33,6 @@
             <option value="hospital_managed">Hospital-Managed Program</option>
           </select>
         </label>
-
         <div class="grid grid-cols-2 gap-3">
           <label><span class="label">“Blue” Rate (%)</span><input id="blueRate" type="number" value="12" class="input"></label>
           <label><span class="label">Staff Overhead (%)</span><input id="overhead" type="number" value="20" class="input"></label>
@@ -78,6 +69,32 @@
         <p class="hint mt-2">Thynk cost = fractional FTE × rates × 1920 hrs, after efficiency reduces minutes. No per-case fees.</p>
       </div>
 
+      <!-- NEW: DIY EHR Build-Out Cost -->
+      <div class="card">
+        <h2 class="card-title"><i class="fa-solid fa-screwdriver-wrench"></i> DIY EHR Build-Out (cost & friction)</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label><span class="label">One-time build hours (IT)</span><input id="epicBuild" type="number" value="600" step="20" class="input"></label>
+          <label><span class="label">Maintenance hrs / yr (IT)</span><input id="epicMaint" type="number" value="240" step="20" class="input"></label>
+          <label><span class="label">IT / Analyst $/hr</span><input id="rateIT" type="number" value="80" step="5" class="input"></label>
+          <label><span class="label">Clinical SME $/hr</span><input id="rateSME" type="number" value="120" step="5" class="input"></label>
+          <label><span class="label">SME committee hours (one-time)</span><input id="committeeHours" type="number" value="120" step="10" class="input"></label>
+          <label><span class="label">Roadmap delay (months)</span><input id="roadmapDelay" type="number" value="6" step="1" class="input"></label>
+        </div>
+
+        <div id="ehrCostSummary" class="mt-4 text-sm"></div>
+
+        <div class="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-200 text-[13px] leading-5">
+          <p class="font-semibold text-blue-900 mb-1">Why Thynk is different:</p>
+          <ul class="list-disc ml-5 text-blue-900 space-y-1">
+            <li><b>Clinical logic & societal guidance included</b> (Fleischner, Lung-RADS, O-RADS, TI-RADS, LI-RADS, CAC, GOLD, etc.).</li>
+            <li><b>Communication content included</b>: PCP letters, patient outreach cadences, navigator scripts, escalation trees.</li>
+            <li><b>No committee herding</b>: you don’t have to convene and maintain physician SME committees to define rules/copy.</li>
+            <li><b>No vendor roadmap wait</b>: no dependency on EHR sprint cycles to change rules, queues, or templates.</li>
+          </ul>
+          <p class="mt-2 text-blue-900">All of the above is <b>included in Thynk</b> and maintained by our team—no added fees.</p>
+        </div>
+      </div>
+
       <button id="recalc" class="btn-primary w-full">Recalculate</button>
     </section>
 
@@ -110,12 +127,12 @@
       <div class="card">
         <h2 class="card-title"><i class="fa-solid fa-circle-info"></i> How we calculate FTE, Cost, and ROI</h2>
         <ul class="list-disc ml-6 space-y-2 text-sm text-gray-700">
-          <li><b>Findings:</b> For each enabled module, Red/Amber/Green per 1k CTs are scaled by your annual CTs. “Blue” is the % already managed or not actionable.</li>
-          <li><b>Minutes:</b> Counts × your <i>Time per Severity</i> (Blue/Green/Amber/Red).</li>
-          <li><b>FTE:</b> Minutes split by primary role (Navigator vs Resolution Specialist). Available minutes/FTE = <code>1920 × 60 × (1 − overhead)</code>.</li>
-          <li><b>Hospital Cost:</b> Role FTEs are <i>ceiled</i> to whole people, then × hourly rate × 1920.</li>
-          <li><b>Thynk Cost:</b> Apply efficiency to minutes, compute fractional FTEs, then × Thynk rates × 1920. No per-case fees.</li>
-          <li><b>ROI:</b> Annual savings = Hospital Cost − Thynk Cost (both shown for comparison).</li>
+          <li><b>Findings:</b> Red/Amber/Green per 1k CTs × annual CTs; “Blue” = % already managed/not actionable.</li>
+          <li><b>Minutes:</b> Counts × <i>Time per Severity</i> (Blue/Green/Amber/Red).</li>
+          <li><b>FTE:</b> Minutes split by primary role. Available minutes/FTE = <code>1920×60×(1−overhead)</code>.</li>
+          <li><b>Hospital Cost:</b> Role FTEs are <i>ceiled</i> to whole people, × hourly rate × 1920.</li>
+          <li><b>Thynk Cost:</b> Efficiency reduces minutes → fractional FTEs × Thynk rates × 1920. No per-case fees.</li>
+          <li><b>DIY EHR Cost:</b> Annualized over 5 years: <code>build/5 + maintenance + committee/5</code>. Roadmap delay months describe additional non-financial friction.</li>
         </ul>
       </div>
 
@@ -127,8 +144,6 @@
   </main>
 
   <footer class="text-center py-8 text-xs text-gray-500">© Thynk Health 2025 | Demo workflow modeler</footer>
-
-  <!-- Our app logic -->
   <script src="app.js"></script>
 </body>
 </html>
