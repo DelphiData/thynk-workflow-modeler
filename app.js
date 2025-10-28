@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // ---------- Helpers ----------
   const $ = id => document.getElementById(id);
-  const has = id => !!$(id);
   const setHTML = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
   const on = (id, evt, fn) => { const el = $(id); if (el) el.addEventListener(evt, fn); };
   const money = x => '$' + (x||0).toLocaleString(undefined,{maximumFractionDigits:0});
   const fmt0  = x => (x||0).toLocaleString(undefined,{maximumFractionDigits:0});
   const availMinutes = ovh => 1920*60*(1-ovh);
 
-  /* ---------- Clinical definitions & modules ---------- */
+  // ---------- Clinical definitions ----------
   const clinical = {
     ADR:{red:{def:'Mass >4cm or suspicious (e.g., >10 HU non-contrast).',rec:'Urgent endocrine & likely surgical consult.'},
          amber:{def:'1–4cm indeterminate.',rec:'Adrenal protocol CT/MRI; endocrine referral.'},
@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
          blue:{def:'Under endocrine/ortho care.',rec:'Continue plan.'}},
   };
 
+  // ---------- References ----------
   const references = [
     {id:1, txt:'Fleischner Society 2017 pulmonary nodule guidelines [Radiology].'},
     {id:2, txt:'ACR Lung-RADS v2022.'},
@@ -109,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {id:19, txt:'ACR incidental lymphadenopathy.'}
   ];
 
+  // ---------- Modules (all 19; ILA -> Specialist) ----------
   const modules = [
     { key:'IPN', name:'Incidental Pulmonary Nodule (Fleischner)', primaryRole:'Navigator', distro:{ red:5, amber:20, green:110 }, refs:[1] },
     { key:'LCS', name:'Lung Cancer Screening (Lung-RADS)', primaryRole:'Navigator', distro:{ red:4, amber:15, green:86 }, refs:[2] },
@@ -131,8 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { key:'LYM', name:'Lymphadenopathy (incidental)', primaryRole:'Specialist', distro:{ red:2, amber:10, green:30 }, refs:[19] }
   ].map(m => ({...m, on:true}));
 
-  /* ---------- Input getters ---------- */
-  const getParams = () => ({
+  // ---------- Inputs ----------
+  const params = () => ({
     ct: +($('ctVolume')?.value ?? 0),
     model: $('supportModel')?.value ?? 'thynk_managed',
     blueRate: +( $('blueRate')?.value ?? 12)/100,
@@ -151,9 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
     rateThynkNav:+($('rateThynkNav')?.value ?? 55),
   });
 
-  /* ---------- Rendering ---------- */
+  // ---------- Render: workflow ----------
   function renderWorkflow(model){
-    if(!has('workflow')) return;
     const node=(icon,txt,color)=>`<div class="flex flex-col items-center text-center w-28">
       <div class="rounded-full w-14 h-14 flex items-center justify-center bg-${color}-100 border-2 border-${color}-300 shadow-sm">
         <i class="fas ${icon} text-${color}-600"></i>
@@ -165,14 +166,14 @@ document.addEventListener('DOMContentLoaded', () => {
     setHTML('workflow', `<div class="flex justify-center items-center gap-3 flex-wrap">${html}</div>`);
   }
 
+  // ---------- Render: modules ----------
   function renderModules(){
-    if(!has('modules')) return;
-    const root = $('modules'); root.innerHTML='';
+    const root = $('modules'); if(!root) return; root.innerHTML='';
     modules.forEach((m, i)=>{
       const rolePill = m.primaryRole==='Navigator'
         ? '<span class="pill pill-blue">Clinical Navigator</span>'
         : '<span class="pill pill-green">Resolution Specialist</span>';
-      const defs = clinical[m.key] || {red:{def:'—',rec:'—'},amber:{def:'—',rec:'—'},green:{def:'—',rec:'—'},blue:{def:'—',rec:'—'}};
+      const defs = clinical[m.key];
       const refs = m.refs?.map(x=>`[${x}]`).join(', ')||'';
 
       const card = document.createElement('div');
@@ -214,6 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
       root.appendChild(card);
     });
 
+    // Hooks
     root.querySelectorAll('.mod-toggle').forEach(cb=>{
       cb.addEventListener('change', e=>{
         const i = +e.target.dataset.i; modules[i].on = e.target.checked; calc();
@@ -227,13 +229,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     root.querySelectorAll('.exp').forEach(btn=>{
       btn.addEventListener('click', e=>{
-        const card = e.target.closest('.mod-card'); if(card) card.classList.toggle('expanded');
+        const card = e.currentTarget.closest('.mod-card'); if(card) card.classList.toggle('expanded');
       });
     });
   }
 
+  // ---------- Calculate & render outputs ----------
   function calc(){
-    const p = getParams();
+    const p = params();
     renderWorkflow(p.model);
 
     const active = modules.filter(m=>m.on);
@@ -277,67 +280,65 @@ document.addEventListener('DOMContentLoaded', () => {
       r.thynkCost = share*thynkCost;
     });
 
-    if(has('kpis')){
-      setHTML('kpis', [
-        `<div class="card text-center"><h3 class="text-thynk-blue font-semibold text-sm uppercase mb-1">Hospital Cost</h3><p class="text-2xl font-extrabold">${money(hospCost)}</p><p class="text-xs text-gray-500">${fmt0(hospFteSpec+hospFteNav)} FTE</p></div>`,
-        `<div class="card text-center"><h3 class="text-thynk-green font-semibold text-sm uppercase mb-1">Thynk Managed</h3><p class="text-2xl font-extrabold">${money(thynkCost)}</p><p class="text-xs text-gray-500">${fmt0(thynkFteSpec+thynkFteNav)} FTE (fractional)</p></div>`,
-        `<div class="card text-center"><h3 class="text-gray-600 font-semibold text-sm uppercase mb-1">Savings</h3><p class="text-2xl font-extrabold text-green-600">${money(hospCost - thynkCost)}</p></div>`
-      ].join(''));
-    }
+    // KPIs
+    setHTML('kpis', [
+      `<div class="card text-center"><h3 class="text-thynk-blue font-semibold text-sm uppercase mb-1">Hospital Cost</h3><p class="text-2xl font-extrabold">${money(hospCost)}</p><p class="text-xs text-gray-500">${fmt0(hospFteSpec+hospFteNav)} FTE</p></div>`,
+      `<div class="card text-center"><h3 class="text-thynk-green font-semibold text-sm uppercase mb-1">Thynk Managed</h3><p class="text-2xl font-extrabold">${money(thynkCost)}</p><p class="text-xs text-gray-500">${fmt0(thynkFteSpec+thynkFteNav)} FTE (fractional)</p></div>`,
+      `<div class="card text-center"><h3 class="text-gray-600 font-semibold text-sm uppercase mb-1">Savings</h3><p class="text-2xl font-extrabold text-green-600">${money(hospCost - thynkCost)}</p></div>`
+    ].join(''));
 
-    if(has('table')){
-      setHTML('table', `
-        <table class="w-full text-sm border-collapse">
-          <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
-            <tr>
-              <th class="text-left p-2">Module</th>
-              <th class="text-right p-2">Red</th>
-              <th class="text-right p-2">Amber</th>
-              <th class="text-right p-2">Green</th>
-              <th class="text-right p-2">Blue</th>
-              <th class="text-right p-2">Total</th>
-              <th class="text-right p-2">Hospital Cost</th>
-              <th class="text-right p-2">Thynk Cost</th>
+    // Table
+    setHTML('table', `
+      <table class="w-full text-sm border-collapse">
+        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+          <tr>
+            <th class="text-left p-2">Module</th>
+            <th class="text-right p-2">Red</th>
+            <th class="text-right p-2">Amber</th>
+            <th class="text-right p-2">Green</th>
+            <th class="text-right p-2">Blue</th>
+            <th class="text-right p-2">Total</th>
+            <th class="text-right p-2">Hospital Cost</th>
+            <th class="text-right p-2">Thynk Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(r=>`
+            <tr class="border-b">
+              <td class="p-2 text-left">${r.m.name}</td>
+              <td class="p-2 text-right text-red-600 font-medium">${fmt0(r.r)}</td>
+              <td class="p-2 text-right text-orange-600 font-medium">${fmt0(r.a)}</td>
+              <td class="p-2 text-right text-green-700 font-medium">${fmt0(r.g)}</td>
+              <td class="p-2 text-right text-blue-600 font-medium">${fmt0(r.blue)}</td>
+              <td class="p-2 text-right font-semibold">${fmt0(r.total)}</td>
+              <td class="p-2 text-right">${money(r.hospCost)}</td>
+              <td class="p-2 text-right text-purple-800">${money(r.thynkCost)}</td>
             </tr>
-          </thead>
-          <tbody>
-            ${rows.map(r=>`
-              <tr class="border-b">
-                <td class="p-2 text-left">${r.m.name}</td>
-                <td class="p-2 text-right text-red-600 font-medium">${fmt0(r.r)}</td>
-                <td class="p-2 text-right text-orange-600 font-medium">${fmt0(r.a)}</td>
-                <td class="p-2 text-right text-green-700 font-medium">${fmt0(r.g)}</td>
-                <td class="p-2 text-right text-blue-600 font-medium">${fmt0(r.blue)}</td>
-                <td class="p-2 text-right font-semibold">${fmt0(r.total)}</td>
-                <td class="p-2 text-right">${money(r.hospCost)}</td>
-                <td class="p-2 text-right text-purple-800">${money(r.thynkCost)}</td>
-              </tr>
-            `).join('')}
-            <tr class="bg-gray-100 font-bold text-gray-800">
-              <td class="p-2 text-left">All Modules</td>
-              <td class="p-2 text-right">${fmt0(agg.red)}</td>
-              <td class="p-2 text-right">${fmt0(agg.amber)}</td>
-              <td class="p-2 text-right">${fmt0(agg.green)}</td>
-              <td class="p-2 text-right">${fmt0(agg.blue)}</td>
-              <td class="p-2 text-right">${fmt0(agg.total)}</td>
-              <td class="p-2 text-right">${money(hospCost)}</td>
-              <td class="p-2 text-right">${money(thynkCost)}</td>
-            </tr>
-          </tbody>
-        </table>
-      `);
-    }
+          `).join('')}
+          <tr class="bg-gray-100 font-bold text-gray-800">
+            <td class="p-2 text-left">All Modules</td>
+            <td class="p-2 text-right">${fmt0(agg.red)}</td>
+            <td class="p-2 text-right">${fmt0(agg.amber)}</td>
+            <td class="p-2 text-right">${fmt0(agg.green)}</td>
+            <td class="p-2 text-right">${fmt0(agg.blue)}</td>
+            <td class="p-2 text-right">${fmt0(agg.total)}</td>
+            <td class="p-2 text-right">${money(hospCost)}</td>
+            <td class="p-2 text-right">${money(thynkCost)}</td>
+          </tr>
+        </tbody>
+      </table>
+    `);
 
-    // Per-module stats in details (only if those nodes exist)
+    // Per-module details (minutes/FTE share)
     rows.forEach((r, i)=>{
-      const totalMinutes = (minutesByRole.Specialist + minutesByRole.Navigator) || 1;
-      const share = r.minutes/totalMinutes;
-      const node = $(`mstats-${i}`);
+      const totalMins = (minutesByRole.Specialist + minutesByRole.Navigator) || 1;
+      const share = (r.minutes)/totalMins;
+      const node = document.getElementById(`mstats-${i}`);
       if(node){
         node.innerHTML = `
           <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
             <div><span class="hint">Module minutes</span><div class="font-semibold">${fmt0(r.minutes)}</div></div>
-            <div><span class="hint">All-module minutes</span><div class="font-semibold">${fmt0(totalMinutes)}</div></div>
+            <div><span class="hint">All-module minutes</span><div class="font-semibold">${fmt0(totalMins)}</div></div>
             <div><span class="hint">Module FTE share</span><div class="font-semibold">${(share*100).toFixed(1)}%</div></div>
             <div><span class="hint">Primary role</span><div class="font-semibold">${r.m.primaryRole}</div></div>
           </div>`;
@@ -345,40 +346,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Refs list if present
-  if(has('refs')){
-    setHTML('refs', [
-      {id:1, txt:'Fleischner Society 2017 pulmonary nodule guidelines [Radiology].'},
-      {id:2, txt:'ACR Lung-RADS v2022.'},
-      {id:3, txt:'Fleischner position paper on ILAs (2020).'},
-      {id:4, txt:'ACC/AHA prevention; CAC thresholds.'},
-      {id:5, txt:'2022 ACC/AHA Aortic Disease (AAA/TAA).'},
-      {id:6, txt:'Bosniak v2019; ACR Incidental Renal Mass.'},
-      {id:7, txt:'ACR/AGA pancreatic cyst management.'},
-      {id:8, txt:'ACR Incidental Adrenal Mass.'},
-      {id:9, txt:'ACR TI-RADS (2017; updates).'},
-      {id:10, txt:'ACR LI-RADS / incidental liver.'},
-      {id:11, txt:'ACR BI-RADS (5th ed.).'},
-      {id:12, txt:'PI-RADS v2.1.'},
-      {id:13, txt:'ACR O-RADS.'},
-      {id:14, txt:'AGA: colonoscopy after diverticulitis.'},
-      {id:15, txt:'GOLD COPD reports.'},
-      {id:16, txt:'Incidental splenic lesion reviews.'},
-      {id:17, txt:'SRU/ESGAR gallbladder polyp.'},
-      {id:18, txt:'AACE VFA/osteoporosis.'},
-      {id:19, txt:'ACR incidental lymphadenopathy.'}
-    ].map(r=>`<li>[${r.id}] ${r.txt}</li>`).join(''));
-  }
+  // ---------- Render references ----------
+  setHTML('refs', references.map(r=>`<li>[${r.id}] ${r.txt}</li>`).join(''));
 
-  // Wire listeners only if inputs exist (so mixed HTML versions won’t crash)
-  ['ctVolume','supportModel','blueRate','overhead','tBlue','tGreen','tAmber','tRed','rateSpecialist','rateNavigator','ratePCP','thynkEff','rateThynkSpec','rateThynkNav']
-    .forEach(id=>{ on(id,'input',calc); on(id,'change',calc); });
+  // ---------- Wire inputs ----------
+  [
+    'ctVolume','supportModel','blueRate','overhead',
+    'tBlue','tGreen','tAmber','tRed',
+    'rateSpecialist','rateNavigator','ratePCP',
+    'thynkEff','rateThynkSpec','rateThynkNav'
+  ].forEach(id=>{ on(id,'input',calc); on(id,'change',calc); });
 
   on('recalc','click',calc);
   on('enableAll','click',()=>{ modules.forEach(m=>m.on=true); renderModules(); calc(); });
   on('disableAll','click',()=>{ modules.forEach(m=>m.on=false); renderModules(); calc(); });
 
-  // Initial paint (safe even if some sections are missing)
+  // ---------- Initial render ----------
   renderModules();
+  renderWorkflow('thynk_managed');
   calc();
 });
