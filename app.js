@@ -151,6 +151,13 @@ document.addEventListener('DOMContentLoaded', () => {
     thynkEff:+($('thynkEff')?.value ?? 35)/100,
     rateThynkSpec:+($('rateThynkSpec')?.value ?? 24),
     rateThynkNav:+($('rateThynkNav')?.value ?? 55),
+    epicBuild:+($('epicBuild')?.value ?? 600),          // hrs (IT)
+    epicMaint:+($('epicMaint')?.value ?? 240),          // hrs/yr (IT)
+    rateIT:+($('rateIT')?.value ?? 80),                 // $/hr IT
+    rateSME:+($('rateSME')?.value ?? 120),              // $/hr clinical SME
+    committeeHours:+($('committeeHours')?.value ?? 120),// one-time SME hrs
+    roadmapDelay:+($('roadmapDelay')?.value ?? 6)       // months (friction)
+
   });
 
   // ---------- Render: workflow ----------
@@ -328,6 +335,33 @@ document.addEventListener('DOMContentLoaded', () => {
         </tbody>
       </table>
     `);
+    // --- DIY EHR cost summary (left column card) ---
+const buildCost = (p.epicBuild * p.rateIT) + (p.epicBuild * 0.5 * p.rateSME);
+const annualMaintCost = (p.epicMaint * p.rateIT) + (p.epicMaint * 0.5 * p.rateSME);
+const committeeCost = p.committeeHours * p.rateSME; // one-time
+const annualized5yr = (buildCost / 5) + annualMaintCost + (committeeCost / 5);
+
+setHTML('ehrCostSummary', `
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div class="p-3 rounded-lg bg-gray-50 border">
+      <div class="hint">One-time build (IT + 50% SME)</div>
+      <div class="font-semibold">${money(buildCost)}</div>
+    </div>
+    <div class="p-3 rounded-lg bg-gray-50 border">
+      <div class="hint">Annual maintenance (IT + 50% SME)</div>
+      <div class="font-semibold">${money(annualMaintCost)}</div>
+    </div>
+    <div class="p-3 rounded-lg bg-gray-50 border">
+      <div class="hint">SME committee (one-time)</div>
+      <div class="font-semibold">${money(committeeCost)}</div>
+    </div>
+    <div class="p-3 rounded-lg bg-gray-50 border">
+      <div class="hint">5-yr annualized EHR cost</div>
+      <div class="font-extrabold text-thynk-blue">${money(annualized5yr)}</div>
+    </div>
+  </div>
+  <p class="hint mt-2">Roadmap delay: ~${fmt0(p.roadmapDelay)} month(s) of internal waiting/coordination before go-live or rule changes.</p>
+`);
 
     // Per-module details (minutes/FTE share)
     rows.forEach((r, i)=>{
@@ -354,7 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
     'ctVolume','supportModel','blueRate','overhead',
     'tBlue','tGreen','tAmber','tRed',
     'rateSpecialist','rateNavigator','ratePCP',
-    'thynkEff','rateThynkSpec','rateThynkNav'
+    'thynkEff','rateThynkSpec','rateThynkNav',
+    // ADD these:
+  'epicBuild','epicMaint','rateIT','rateSME','committeeHours','roadmapDelay'
   ].forEach(id=>{ on(id,'input',calc); on(id,'change',calc); });
 
   on('recalc','click',calc);
