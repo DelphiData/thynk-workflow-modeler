@@ -12,6 +12,14 @@
   <!-- Our styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
+    <script>
+    const password = prompt("Password:");
+    if (password !== "mySecret123") {
+      document.write("<h1>Access denied</h1>");
+      // Stop loading the rest of the page
+      throw new Error("Unauthorized");
+    }
+  </script>
 <body class="font-inter bg-thynk-gray text-gray-800">
   <!-- Header -->
   <header class="text-center py-8 bg-white border-b border-gray-200">
